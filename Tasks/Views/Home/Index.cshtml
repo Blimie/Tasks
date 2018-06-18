@@ -1,0 +1,50 @@
+﻿@using Tasks.Models
+@using Tasks.Data
+@model IndexViewModel
+
+<div class="row col-md-10 col-md-offset-1">
+    <h1 class="text-center">Welcome, @Model.CurrentUser.Name</h1>
+    <input type="hidden" value="@Model.CurrentUser.Id" id="current-user-id" />
+    <br />
+
+    <div class="col-md-10">
+        <input type="text" max="50" class="form-control" id="title" name="title" placeholder="Task Title" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary" id="add-task">Add Task</button>
+    </div>
+
+    <table class="table table-bordered table-striped table-hover" id="table" style="margin-top: 60px">
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+        </tr>
+        @foreach (Task t in Model.Tasks)
+            {
+            <tr id="TaskId-@t.Id">
+                <td>@t.Title</td>
+                <td>
+                    @if (t.User == null)
+                    {
+                        <button class="btn btn-info" style="width:200px" data-task-id="@t.Id">I'll do this task!</button>
+                    }
+                    else if (t.User.Id == Model.CurrentUser.Id)
+                    {
+                        <button class="btn btn-success" style="width:200px" data-task-id="@t.Id">I'm Done!</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-danger disabled" style="width:200px" data-task-id="@t.Id">@t.User.Name is doing this...</button>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.2.3.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script src="/Scripts/index.js"></script>
+}
